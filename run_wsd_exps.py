@@ -18,9 +18,9 @@ class SenseJudgement:
         return self.wid+"\t"+self.true+"\t"+self.predicted
     
 
-files = ["/data0/projects/crossword_clues/wsd_experiments/senseval2.semcor/wordnet3.0/d00.semcor.lexsn.fixed.key"]
-#         "/data0/projects/crossword_clues/wsd_experiments/senseval2.semcor/wordnet3.0/d01.semcor.lexsn.fixed.key",
-#         "/data0/projects/crossword_clues/wsd_experiments/senseval2.semcor/wordnet3.0/d02.semcor.lexsn.fixed.key"]
+files = ["/data0/projects/crossword_clues/wsd_experiments/senseval2.semcor/wordnet3.0/d00.semcor.lexsn.fixed.key",
+         "/data0/projects/crossword_clues/wsd_experiments/senseval2.semcor/wordnet3.0/d01.semcor.lexsn.fixed.key",
+         "/data0/projects/crossword_clues/wsd_experiments/senseval2.semcor/wordnet3.0/d02.semcor.lexsn.fixed.key"]
 
 algos = WsdAlgos()
 
@@ -54,4 +54,5 @@ for f in files:
         if(pred in trues):
             correct += 1
 
+    print "Total: %d" % total
     print "Precision: %.2f, Recall: %.2f" % (correct/provided, correct/total)

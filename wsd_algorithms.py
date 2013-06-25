@@ -62,6 +62,7 @@ class WsdAlgos:
         sw_hash = {i:1 for i in stopwords.words('english')}
 
         open_wfs = [i for i in wordforms if i.tag != 'punc' and not ('cmd' in i.attrib and i.attrib['cmd'] == "ignore")] # remove stop words and punctuation first
+#        open_wfs = [i for i in wordforms if i.tag != 'punc'] # remove only punctuation
 
         for wf in wordforms:
             if('cmd' in wf.attrib and wf.attrib['cmd'] == 'done'):
@@ -75,15 +76,19 @@ class WsdAlgos:
 
                 idfs = text_utils.get_idfs()
 
-#                context = set([i.text.lower() for i in wordforms if 'cmd' not in i.attrib or i.attrib['cmd'] == "ignore" or i.attrib['id'] != wf.attrib['id']])
                 # get the window now
                 window = 2
                 idx = [i for i,x in enumerate(open_wfs) if x == wf][0]
                 lbound = idx-window if idx-window > 0 else 0 
                 ubound = idx+window if idx+window < len(open_wfs) else len(open_wfs)-1
 
-                context = set(text_utils.lemmatize(([i.text.lower() for i in open_wfs[lbound:(ubound+1)] if ('cmd' not in i.attrib or i.attrib['cmd'] == "ignore" or i.attrib['id'] != wf.attrib['id'])])))
-                
+#                all_context = set(text_utils.lemmatize(([i.text.lower() for i in open_wfs[lbound:(ubound+1)] if ('cmd' not in i.attrib or (i.attrib['cmd'] != "ignore" and i.attrib['id'] != wf.attrib['id']))]))) # this one keeps stopwords in window count
+                all_context = set(text_utils.lemmatize(([i.text.lower() for i in open_wfs[lbound:(ubound+1)] if (i.attrib['id'] != wf.attrib['id'])]))) # this one keeps stopwords in window count
+
+
+                jc_th = 0.1
+                context = [i for i in all_context if text_utils.compute_jc_sim(i,lemma) > jc_th] # lexical chain selection algorithm
+
                 outstr = "-------------------"
                 outstr += "\ncontext: "+str(context)
 
